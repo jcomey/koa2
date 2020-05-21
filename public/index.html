@@ -1,0 +1,21 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上传资料</title>
+    <style>
+        #file{padding:10px;border:1px dotted #eee;width: 90vw;display: block;margin:0 auto;}
+        body{font-size: 18px;}
+        .btn{font-size:20px;background: #2281f8;color:#fff;width: 90vw;margin:15px auto;padding:10px;display: block;border-radius: 5px;border:none;}
+    </style>
+</head>
+<body>
+    <form action="./upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" id="file" value="" accept="image/*" multiple="multiple" />
+        <input class="btn" type="submit" value="提交资料"/>
+    </form>
+</body>
+</html>
