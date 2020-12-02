@@ -1,37 +1,41 @@
-const koa = require('koa');
-const app = new koa();
-const koaBody = require('koa-body');
-const router = require('koa-router')(); 
-const serve = require('koa-static');
-const path=require('path')
-const fs=require('fs')
-app.use(serve(__dirname + "/public"));
-app.use(koaBody({
-  multipart: true,
-  formidable: {
-    maxFileSize: 500*1024*1024 // 设置上传文件大小最大限制，默认2M
-  }
-}));
+const Koa=require('koa')
+const bodyParser=require('koa-bodyparser')   
+const router = require('koa-router')()                  
+const app =new Koa()
+const cors = require('koa2-cors');
+const path = require('path')
+const fs = require('fs')
+const mongoose = require('mongoose');
+// app.use(cors({
+//   origin: function (ctx) {
+//       return '*'  // 允许来自所有域名请求
+//   },
+//   exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
+//   maxAge: 5,
+//   credentials: true,
+//   allowMethods: ['GET', 'POST', 'DELETE', 'OPTIONS', 'PUT'],
+//   allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+// }))
 
-router.post('/upload', async (ctx, next) => {
-    // 上传单个文件
-    const file = ctx.request.files.file; // 获取上传文件
-    console.log(file.path)
-    // 创建可读流
-    const reader = fs.createReadStream(file.path);
-    let filePath = path.join(__dirname, 'public/') + `${file.name}`;
-    // 创建可写流
-    const upStream = fs.createWriteStream(filePath);
-    // 可读流通过管道写入可写流
-    reader.pipe(upStream);
-    return ctx.body = "上传成功！";
-  });
- 
-
-
-app.use(router.routes()); 
-app.listen(3001, ()=>{
-  console.log('koa is listening in 3001');
+app.use(cors())
+  router.get('/',async (ctx,next)=>{  
+    await next()
+    ctx.body = '<h1>this is a get response!</h1>'
+    
 })
 
+router.post('/addform',async (ctx,next)=>{  
+  ctx.set('Access-Control-Allow-Origin','*')
+  await next()
+  ctx.body = '提交成功！'
+  
+})
 
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/mongoosedb');
+  app.use(router.routes(),bodyParser())
+app.listen(3001, () => {
+  console.log('koa is listening in 3001');
+})
+module.exports = app
+ 
